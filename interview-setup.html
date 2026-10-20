@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HireMind | Interview Setup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="interview-setup.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="student-dashboard.html">
+      <span class="brand-icon">H</span>
+      Hire<span>Mind</span>
+    </a>
+    <a class="back-link" href="student-dashboard.html">← Back to dashboard</a>
+  </header>
+
+  <main class="setup-container">
+    <div class="eyebrow">YOUR PRACTICE SESSION</div>
+    <h1>Set up your interview</h1>
+    <p class="subtitle">Personalize your session and prepare at your own pace.</p>
+
+    <div class="step-progress">
+      <div class="step active"><span>1</span><div><strong>Configure</strong><small>Choose your preferences</small></div></div>
+      <div class="step-line"></div>
+      <div class="step"><span>2</span><div><strong>Interview</strong><small>Practice questions</small></div></div>
+      <div class="step-line"></div>
+      <div class="step"><span>3</span><div><strong>Feedback</strong><small>Review your session</small></div></div>
+    </div>
+
+    <div class="setup-layout">
+      <form id="setupForm" class="setup-card">
+        <section class="form-section">
+          <h2>01. Choose interview type</h2>
+          <p class="section-description">What would you like to practise today?</p>
+
+          <div class="type-options">
+            <label class="type-option selected">
+              <input type="radio" name="interviewType" value="Technical" checked>
+              <span class="type-icon purple">⌘</span>
+              <span class="type-text"><strong>Technical</strong><small>CS, coding and DSA</small></span>
+              <span class="radio-indicator"></span>
+            </label>
+            <label class="type-option">
+              <input type="radio" name="interviewType" value="HR">
+              <span class="type-icon blue">♡</span>
+              <span class="type-text"><strong>HR interview</strong><small>Behaviour and communication</small></span>
+              <span class="radio-indicator"></span>
+            </label>
+            <label class="type-option">
+              <input type="radio" name="interviewType" value="Mixed">
+              <span class="type-icon orange">✦</span>
+              <span class="type-text"><strong>Mixed interview</strong><small>Technical + HR questions</small></span>
+              <span class="radio-indicator"></span>
+            </label>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>02. Configure your session</h2>
+          <p class="section-description">Adjust the interview to your preparation level.</p>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="jobRole">Target role</label>
+              <select id="jobRole" name="jobRole" required>
+                <option value="Software Engineer">Software Engineer</option>
+                <option value="Frontend Developer">Frontend Developer</option>
+                <option value="Backend Developer">Backend Developer</option>
+                <option value="Full Stack Developer">Full Stack Developer</option>
+                <option value="Java Developer">Java Developer</option>
+                <option value="Data Analyst">Data Analyst</option>
+                <option value="General HR">General HR</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="difficulty">Difficulty level</label>
+              <select id="difficulty" name="difficulty" required>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate" selected>Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="duration">Interview duration</label>
+              <select id="duration" name="duration">
+                <option value="15">15 minutes</option>
+                <option value="30" selected>30 minutes</option>
+                <option value="45">45 minutes</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="questionCount">Number of questions</label>
+              <select id="questionCount" name="questionCount">
+                <option value="5">5 questions</option>
+                <option value="10" selected>10 questions</option>
+                <option value="15">15 questions</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section" id="topicsSection">
+          <h2>03. Select focus areas</h2>
+          <p class="section-description">Choose the topics you want to focus on.</p>
+          <div class="topic-options" id="topicOptions">
+            <label class="topic-option"><input type="checkbox" name="topics" value="Java" checked><span>Java</span></label>
+            <label class="topic-option"><input type="checkbox" name="topics" value="Data Structures"><span>Data Structures</span></label>
+            <label class="topic-option"><input type="checkbox" name="topics" value="Algorithms"><span>Algorithms</span></label>
+            <label class="topic-option"><input type="checkbox" name="topics" value="OOP"><span>OOP</span></label>
+            <label class="topic-option"><input type="checkbox" name="topics" value="DBMS"><span>DBMS</span></label>
+            <label class="topic-option"><input type="checkbox" name="topics" value="Operating Systems"><span>Operating Systems</span></label>
+          </div>
+          <p id="topicHint" class="field-hint">Select at least one focus area for a technical interview.</p>
+        </section>
+
+        <section class="form-section last-section">
+          <h2>04. Additional preferences</h2>
+          <label class="toggle-option">
+            <span><strong>Include follow-up questions</strong><small>Explore your answers in greater depth.</small></span>
+            <input type="checkbox" id="followUps" checked>
+            <span class="toggle-switch"></span>
+          </label>
+        </section>
+
+        <p class="form-error hidden" id="formError" role="alert"></p>
+        <div class="form-actions">
+          <a href="student-dashboard.html" class="cancel-button">Cancel</a>
+          <button type="submit" class="primary-button">Review interview <span>→</span></button>
+        </div>
+      </form>
+
+      <aside class="summary-column">
+        <div class="summary-card">
+          <span class="summary-label">SESSION SUMMARY</span>
+          <div class="summary-art"><span>✦</span><div class="summary-orbit"></div></div>
+          <h2>You're preparing for success.</h2>
+          <p class="summary-description">A little practice today can help you feel more confident tomorrow.</p>
+          <div class="summary-divider"></div>
+          <div class="summary-row"><span>Interview type</span><strong id="summaryType">Technical</strong></div>
+          <div class="summary-row"><span>Target role</span><strong id="summaryRole">Software Engineer</strong></div>
+          <div class="summary-row"><span>Difficulty</span><strong id="summaryDifficulty">Intermediate</strong></div>
+          <div class="summary-row"><span>Duration</span><strong id="summaryDuration">30 minutes</strong></div>
+          <div class="summary-row"><span>Questions</span><strong id="summaryQuestions">10</strong></div>
+          <div class="summary-divider"></div>
+          <div class="summary-note"><span>ⓘ</span><p>Settings are used only in this frontend demo. No interview data is sent to a server.</p></div>
+        </div>
+        <div class="tip-card"><span>✧</span><div><strong>Quick tip</strong><p>Speak clearly, explain your reasoning, and use examples when possible.</p></div></div>
+      </aside>
+    </div>
+    <footer>© 2026 HireMind · Your practice journey starts here.</footer>
+  </main>
+
+  <script src="interview-setup.js"></script>
+</body>
+</html>

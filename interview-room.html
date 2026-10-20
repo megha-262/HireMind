@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireMind | Interview Room</title>
+  <link rel="stylesheet" href="interview-room.css" />
+  <script src="interview-room.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="student-dashboard.html" class="brand">
+      <span class="brand-icon">H</span>
+      <span>HireMind</span>
+    </a>
+
+    <div class="interview-status">
+      <span class="live-dot"></span>
+      Interview in progress
+    </div>
+
+    <button id="exitBtn" class="btn btn-outline">Exit Interview</button>
+  </header>
+
+  <main class="room-container">
+    <section class="room-heading">
+      <div>
+        <p class="eyebrow">YOUR INTERVIEW SESSION</p>
+        <h1>Interview Room</h1>
+        <p class="muted">
+          Take your time, think clearly, and explain your approach.
+        </p>
+      </div>
+
+      <div class="timer-card">
+        <span class="timer-label">Time remaining</span>
+        <strong id="timer">30:00</strong>
+        <span id="timerMessage" class="muted">Manage your time wisely</span>
+      </div>
+    </section>
+
+    <section class="session-details">
+      <div>
+        <span class="detail-label">Interview type</span>
+        <strong id="sessionType">Technical</strong>
+      </div>
+      <div>
+        <span class="detail-label">Job role</span>
+        <strong id="sessionRole">Software Developer</strong>
+      </div>
+      <div>
+        <span class="detail-label">Difficulty</span>
+        <strong id="sessionDifficulty">Intermediate</strong>
+      </div>
+      <div>
+        <span class="detail-label">Duration</span>
+        <strong id="sessionDuration">30 minutes</strong>
+      </div>
+    </section>
+
+    <section class="interview-layout">
+      <aside class="question-sidebar">
+        <div class="sidebar-heading">
+          <h2>Questions</h2>
+          <span id="questionCount">1 / 5</span>
+        </div>
+
+        <div class="progress-track">
+          <div id="progressBar" class="progress-fill"></div>
+        </div>
+
+        <div id="questionList" class="question-list"></div>
+
+        <div class="sidebar-note">
+          <span class="note-icon">i</span>
+          <p>Your answers are kept in this page during the demo session.</p>
+        </div>
+      </aside>
+
+      <section class="question-panel">
+        <div class="question-topline">
+          <span id="questionCategory" class="category-badge">
+            Technical
+          </span>
+          <span id="questionNumber" class="muted">Question 1 of 5</span>
+        </div>
+
+        <h2 id="questionTitle">Tell us about yourself.</h2>
+
+        <p id="questionDescription" class="question-description">
+          Introduce yourself and briefly describe your skills and interests.
+        </p>
+
+        <div class="answer-section">
+          <div class="answer-heading">
+            <label for="answerInput">Your answer</label>
+            <span id="wordCount">0 words</span>
+          </div>
+
+          <textarea
+            id="answerInput"
+            placeholder="Write your answer here. Explain your thinking clearly..."
+            rows="9"
+            spellcheck="true"
+          ></textarea>
+
+          <p class="answer-tip">
+            Tip: Structure your answer and include examples wherever relevant.
+          </p>
+        </div>
+
+        <div class="question-actions">
+          <button id="previousBtn" class="btn btn-outline">
+            ← Previous
+          </button>
+
+          <span id="savedStatus" class="muted">Answer not entered</span>
+
+          <button id="nextBtn" class="btn btn-primary">
+            Next Question →
+          </button>
+        </div>
+
+        <div class="finish-row">
+          <span class="muted">Finished answering all you can?</span>
+          <button id="finishBtn" class="btn btn-finish">
+            Finish Interview
+          </button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="confirmModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-icon">?</div>
+      <h2 id="modalTitle">Finish this interview?</h2>
+      <p id="modalMessage">
+        Your demo session will end. You can review the session summary next.
+      </p>
+      <div class="modal-actions">
+        <button id="cancelModalBtn" class="btn btn-outline">
+          Continue Interview
+        </button>
+        <button id="confirmFinishBtn" class="btn btn-primary">
+          Finish Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="resultModal" class="modal hidden">
+    <div class="modal-card result-card">
+      <div class="success-icon">✓</div>
+      <p class="eyebrow">SESSION COMPLETED</p>
+      <h2>Interview Complete!</h2>
+      <p class="muted">
+        Your demo interview has ended. This summary is based on your activity,
+        not an AI assessment of answer quality.
+      </p>
+
+      <div class="result-stats">
+        <div>
+          <strong id="answeredResult">0</strong>
+          <span>Answered</span>
+        </div>
+        <div>
+          <strong id="unansweredResult">0</strong>
+          <span>Unanswered</span>
+        </div>
+        <div>
+          <strong id="durationResult">0 min</strong>
+          <span>Time used</span>
+        </div>
+      </div>
+
+      <p id="resultMessage" class="result-message"></p>
+
+      <div class="result-actions">
+        <button id="reviewAnswersBtn" class="btn btn-outline">
+          Review Answers
+        </button>
+        <button id="dashboardBtn" class="btn btn-primary">
+          Back to Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

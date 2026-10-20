@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f8fc">
+  <title>HireMind | Student Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a href="student-dashboard.html" class="brand">
+      <span class="brand-icon">H</span>
+      <span>Hire<span class="brand-accent">Mind</span></span>
+    </a>
+
+    <div class="sidebar-label">WORKSPACE</div>
+
+    <nav class="nav-menu" aria-label="Main navigation">
+      <button class="nav-link active" data-section="overview">
+        <span class="nav-icon">▦</span> Overview
+      </button>
+      <button class="nav-link" data-section="practice">
+        <span class="nav-icon">✳</span> Practice Interviews
+      </button>
+      <button class="nav-link" data-section="history">
+        <span class="nav-icon">◷</span> Interview History
+      </button>
+      <button class="nav-link" data-section="feedback">
+        <span class="nav-icon">▤</span> My Feedback
+      </button>
+    </nav>
+
+    <div class="sidebar-label second-label">ACCOUNT</div>
+
+    <nav class="nav-menu" aria-label="Account navigation">
+      <button class="nav-link" data-section="profile">
+        <span class="nav-icon">♙</span> My Profile
+      </button>
+      <button class="nav-link" id="helpButton">
+        <span class="nav-icon">?</span> Help & Support
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="upgrade-card">
+        <div class="upgrade-icon">✦</div>
+        <strong>Ready to improve?</strong>
+        <p>Practice regularly to build your interview confidence.</p>
+        <button class="upgrade-button" data-go="practice">Start practising →</button>
+      </div>
+
+      <button class="profile-mini" data-section="profile">
+        <span class="avatar">RY</span>
+        <span class="mini-user">
+          <strong id="sidebarName">Ronak Yadav</strong>
+          <small>Student account</small>
+        </span>
+        <span class="more-icon">•••</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation"
+        aria-expanded="false">☰</button>
+
+      <div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumbName">Overview</strong></div>
+
+      <div class="topbar-actions">
+        <span class="demo-label"><span></span> Demo mode</span>
+        <button class="icon-button" id="notificationButton" aria-label="Notifications">♧</button>
+        <button class="top-avatar" data-section="profile" aria-label="Open profile">RY</button>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <section class="page-section" id="overviewSection">
+        <div class="welcome-row">
+          <div>
+            <div class="eyebrow">YOUR INTERVIEW JOURNEY</div>
+            <h1>Welcome back, <span id="welcomeName">Ronak</span>! <span class="wave">✦</span></h1>
+            <p class="muted">Build confidence, practise smarter, and get ready for your next opportunity.</p>
+          </div>
+          <button class="primary-button" data-go="practice">
+            <span>＋</span> Start an interview
+          </button>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-copy">
+            <span class="hero-pill"><span>✦</span> YOUR PERSONAL AI COACH</span>
+            <h2>Your next opportunity<br>starts with <span>practice.</span></h2>
+            <p>Sharpen your technical and HR interview skills with structured practice and actionable feedback.</p>
+            <button class="hero-button" data-go="practice">Explore practice interviews <span>→</span></button>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-orbit orbit-one"></div>
+            <div class="art-orbit orbit-two"></div>
+            <div class="art-core"><span>H</span></div>
+            <div class="art-chip chip-top">✦ AI Powered</div>
+            <div class="art-chip chip-bottom"><span class="green-dot"></span> Ready to practise</div>
+            <div class="art-spark spark-one">✧</div>
+            <div class="art-spark spark-two">✦</div>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <h2>Your progress</h2>
+            <p class="muted">A quick look at your practice activity.</p>
+          </div>
+          <span class="period-label">All time</span>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-icon purple">▣</span>
+              <span class="stat-caption">PRACTICE</span>
+            </div>
+            <div class="stat-number" id="totalInterviews">8</div>
+            <div class="stat-description">Sessions completed</div>
+            <div class="stat-bottom"><span class="tiny-dot purple-dot"></span> Keep your momentum going</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-icon blue">◈</span>
+              <span class="stat-caption">PERFORMANCE</span>
+            </div>
+            <div class="stat-number"><span id="averageScore">78</span><small>/100</small></div>
+            <div class="stat-description">Average practice score</div>
+            <div class="stat-bottom"><span class="tiny-dot blue-dot"></span> Review feedback to improve</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-icon green">✓</span>
+              <span class="stat-caption">COMPLETION</span>
+            </div>
+            <div class="stat-number" id="completedCount">6</div>
+            <div class="stat-description">Completed sessions</div>
+            <div class="stat-bottom"><span class="tiny-dot green-dot"></span> Two sessions in progress or pending</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-icon orange">⚑</span>
+              <span class="stat-caption">YOUR GOAL</span>
+            </div>
+            <div class="stat-number"><span id="goalCount">6</span><small>/10</small></div>
+            <div class="stat-description">Monthly practice goal</div>
+            <div class="progress-track"><span id="goalProgress" style="width:60%"></span></div>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel activity-panel">
+            <div class="panel-heading">
+              <div><h2>Practice activity</h2><p class="muted">Your weekly interview activity</p></div>
+              <span class="chart-tag">This week</span>
+            </div>
+            <div class="chart-area">
+              <div class="chart-y-labels"><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span></div>
+              <div class="chart-main">
+                <div class="chart-grid">
+                  <span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="bar-chart" id="activityChart">
+                  <div class="bar-column"><div class="bar" style="height:20%"></div><span>Mon</span></div>
+                  <div class="bar-column"><div class="bar" style="height:40%"></div><span>Tue</span></div>
+                  <div class="bar-column"><div class="bar" style="height:60%"></div><span>Wed</span></div>
+                  <div class="bar-column"><div class="bar" style="height:20%"></div><span>Thu</span></div>
+                  <div class="bar-column"><div class="bar today" style="height:80%"></div><span>Fri</span></div>
+                  <div class="bar-column"><div class="bar" style="height:40%"></div><span>Sat</span></div>
+                  <div class="bar-column"><div class="bar" style="height:20%"></div><span>Sun</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="chart-footer"><span><i class="legend-dot"></i> Practice sessions</span><strong>Sample activity</strong></div>
+          </section>
+
+          <section class="panel skills-panel">
+            <div class="panel-heading">
+              <div><h2>Skill overview</h2><p class="muted">Illustrative skill breakdown</p></div>
+              <span class="skill-symbol">✧</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-label"><span>Technical knowledge</span><strong>82%</strong></div>
+              <div class="skill-track"><span style="width:82%"></span></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-label"><span>Communication</span><strong>74%</strong></div>
+              <div class="skill-track"><span style="width:74%"></span></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-label"><span>Problem solving</span><strong>68%</strong></div>
+              <div class="skill-track"><span style="width:68%"></span></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-label"><span>Confidence</span><strong>79%</strong></div>
+              <div class="skill-track"><span style="width:79%"></span></div>
+            </div>
+            <button class="text-button" data-section="feedback">Explore your feedback →</button>
+          </section>
+        </div>
+
+        <section class="panel recent-panel">
+          <div class="panel-heading">
+            <div><h2>Recent interviews</h2><p class="muted">Review your recent practice sessions.</p></div>
+            <button class="text-button" data-section="history">View all →</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>INTERVIEW</th><th>TYPE</th><th>DATE</th><th>SCORE</th><th>STATUS</th><th></th></tr></thead>
+              <tbody id="interviewTable">
+                <tr>
+                  <td><span class="table-icon purple">⌘</span><span class="table-title">Java Developer</span></td>
+                  <td>Technical</td><td>Oct 18, 2026</td><td><strong>84/100</strong></td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td><button class="row-action" data-feedback="Java Developer">View ↗</button></td>
+                </tr>
+                <tr>
+                  <td><span class="table-icon blue">♡</span><span class="table-title">HR Practice</span></td>
+                  <td>HR</td><td>Oct 16, 2026</td><td><strong>76/100</strong></td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td><button class="row-action" data-feedback="HR Practice">View ↗</button></td>
+                </tr>
+                <tr>
+                  <td><span class="table-icon orange">⌘</span><span class="table-title">Data Structures</span></td>
+                  <td>Technical</td><td>Oct 14, 2026</td><td>—</td>
+                  <td><span class="status pending">Not started</span></td>
+                  <td><button class="row-action" data-go="practice">Start ↗</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <footer class="page-footer">
+          <span>© 2026 HireMind · Practise with purpose.</span>
+          <span>Designed to support your interview journey.</span>
+        </footer>
+      </section>
+
+      <section class="page-section secondary-section hidden" id="practiceSection">
+        <div class="eyebrow">PREPARE WITH PURPOSE</div>
+        <h1>Practice interviews</h1>
+        <p class="muted section-intro">Choose a practice format that fits your preparation goals.</p>
+        <div class="practice-grid">
+          <article class="practice-card">
+            <span class="practice-icon purple">⌘</span><span class="card-tag">TECHNICAL</span>
+            <h2>Technical interview</h2>
+            <p>Practise programming concepts, data structures, problem solving, and technical questions.</p>
+            <ul><li>Core CS concepts</li><li>Programming and DSA</li><li>Role-based questions</li></ul>
+            <button class="primary-button full-width" data-start="Technical">Set up practice →</button>
+          </article>
+          <article class="practice-card">
+            <span class="practice-icon blue">♡</span><span class="card-tag">BEHAVIOURAL</span>
+            <h2>HR interview</h2>
+            <p>Prepare clear, structured answers for common HR and behavioural interview questions.</p>
+            <ul><li>Self introduction</li><li>Strengths and experiences</li><li>Situational questions</li></ul>
+            <button class="primary-button full-width" data-start="HR">Set up practice →</button>
+          </article>
+          <article class="practice-card">
+            <span class="practice-icon orange">✧</span><span class="card-tag">COMBINED</span>
+            <h2>Mixed interview</h2>
+            <p>Explore a combination of technical and HR questions in one practice session.</p>
+            <ul><li>Multiple question types</li><li>Structured practice</li><li>Overall preparation</li></ul>
+            <button class="primary-button full-width" data-start="Mixed">Set up practice →</button>
+          </article>
+        </div>
+        <div class="notice-card"><span>ⓘ</span><p>These are frontend demonstrations. The actual AI interview and automated evaluation will be connected later.</p></div>
+      </section>
+
+      <section class="page-section secondary-section hidden" id="historySection">
+        <div class="eyebrow">YOUR JOURNEY</div>
+        <h1>Interview history</h1>
+        <p class="muted section-intro">Review your previous practice sessions.</p>
+        <div class="panel">
+          <div class="panel-heading"><div><h2>All sessions</h2><p class="muted">Demonstration records only</p></div></div>
+          <div class="table-wrap">
+            <table><thead><tr><th>INTERVIEW</th><th>TYPE</th><th>DATE</th><th>SCORE</th><th>STATUS</th><th></th></tr></thead>
+              <tbody id="historyTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-section secondary-section hidden" id="feedbackSection">
+        <div class="eyebrow">LEARN AND IMPROVE</div>
+        <h1>My feedback</h1>
+        <p class="muted section-intro">Use feedback to identify what you do well and what to practise next.</p>
+        <div class="feedback-grid">
+          <article class="panel feedback-card"><span class="practice-icon green">✓</span><h2>Strengths</h2><p>Sample feedback</p><ul><li>Good understanding of core concepts</li><li>Structured approach to answers</li><li>Consistent preparation</li></ul></article>
+          <article class="panel feedback-card"><span class="practice-icon orange">↗</span><h2>Areas to improve</h2><p>Sample feedback</p><ul><li>Explain your reasoning clearly</li><li>Practise more coding problems</li><li>Use examples in behavioural answers</li></ul></article>
+        </div>
+        <div class="notice-card"><span>ⓘ</span><p>Feedback shown here is illustrative, not generated from a real interview or AI assessment.</p></div>
+      </section>
+
+      <section class="page-section secondary-section hidden" id="profileSection">
+        <div class="eyebrow">YOUR ACCOUNT</div>
+        <h1>My profile</h1>
+        <p class="muted section-intro">Edit your demo profile details.</p>
+        <form class="panel profile-form" id="profileForm">
+          <div class="profile-heading"><span class="profile-large-avatar" id="profileAvatar">RY</span><div><h2 id="profileDisplayName">Ronak Yadav</h2><p class="muted">Student account · Demo mode</p></div></div>
+          <label for="fullName">Full name</label><input id="fullName" name="fullName" required value="Ronak Yadav">
+          <label for="email">Email address</label><input id="email" name="email" type="email" required value="ronak@example.com">
+          <label for="studyRole">Preparation focus</label>
+          <select id="studyRole"><option>Software Engineering</option><option>Frontend Development</option><option>Backend Development</option><option>Data Structures & Algorithms</option><option>General Interview Preparation</option></select>
+          <button type="submit" class="primary-button">Save demo profile</button>
+          <p class="muted form-note">Changes are only kept in this page session; no account data is stored.</p>
+        </form>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="modal-backdrop hidden" id="modalBackdrop" role="presentation">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" aria-label="Close dialog">×</button>
+    <span class="modal-icon">✦</span>
+    <h2 id="modalTitle">Coming soon</h2>
+    <div id="modalBody"><p>This feature will be available in a future version of HireMind.</p></div>
+    <button class="primary-button full-width" id="modalOkay">Got it</button>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="dashboard.js"></script>
+</body>
+</html>

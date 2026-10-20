@@ -1,4 +1,3 @@
-
 const registerForm = document.getElementById("registerForm");
 const fullName = document.getElementById("fullName");
 const email = document.getElementById("email");
@@ -8,7 +7,7 @@ const confirmPassword = document.getElementById("confirmPassword");
 const terms = document.getElementById("terms");
 const registerMessage = document.getElementById("registerMessage");
 
-// Show or hide either password field
+// Show or hide password
 document.querySelectorAll("[data-toggle]").forEach((button) => {
     button.addEventListener("click", () => {
         const input = document.getElementById(button.dataset.toggle);
@@ -16,11 +15,7 @@ document.querySelectorAll("[data-toggle]").forEach((button) => {
 
         input.type = showPassword ? "text" : "password";
 
-        button.setAttribute(
-            "aria-pressed",
-            String(showPassword)
-        );
-
+        button.setAttribute("aria-pressed", String(showPassword));
         button.setAttribute(
             "aria-label",
             showPassword ? "Hide password" : "Show password"
@@ -28,22 +23,21 @@ document.querySelectorAll("[data-toggle]").forEach((button) => {
     });
 });
 
-// Display a message
+// Display message
 function showMessage(message, isSuccess = false) {
     registerMessage.textContent = message;
     registerMessage.classList.add("visible");
-
     registerMessage.style.color = isSuccess ? "#21845f" : "#b34b57";
 }
 
-// Clear old messages while the form is edited
+// Clear message when form is edited
 registerForm.addEventListener("input", () => {
     registerMessage.textContent = "";
     registerMessage.classList.remove("visible");
 });
 
-// Frontend-only registration validation
-registerForm.addEventListener("submit", (event) => {
+// Register user through backend
+registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     if (!fullName.value.trim()) {
@@ -82,20 +76,59 @@ registerForm.addEventListener("submit", (event) => {
         return;
     }
 
-    showMessage(
-        "Form validation successful! Account creation will be enabled after backend integration.",
-        true
-    );
+    const submitButton = registerForm.querySelector('button[type="submit"]');
+    const buttonText = submitButton.querySelector("span");
 
-    // No account is created and no data is saved.
+    submitButton.disabled = true;
+    buttonText.textContent = "Creating account...";
+
+    try {
+        const response = await fetch("http://localhost:5050/api/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fullName: fullName.value.trim(),
+                email: email.value.trim(),
+                role: role.value,
+                password: password.value,
+                confirmPassword: confirmPassword.value
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            showMessage(data.message || "Registration failed. Please try again.");
+            return;
+        }
+
+        showMessage(
+            "Account created successfully! You can now sign in.",
+            true
+        );
+
+        registerForm.reset();
+
+    } catch (error) {
+        console.error("Registration request failed:", error);
+        showMessage(
+            "Cannot connect to the server. Please make sure the backend is running."
+        );
+    } finally {
+        submitButton.disabled = false;
+        buttonText.textContent = "Create my account";
+    }
 });
 
-// Placeholder links until their pages exist
+// Terms of Use placeholder
 document.getElementById("termsLink").addEventListener("click", (event) => {
     event.preventDefault();
     showMessage("The Terms of Use page will be added later.");
 });
 
+// Privacy Policy placeholder
 document.getElementById("privacyLink").addEventListener("click", (event) => {
     event.preventDefault();
     showMessage("The Privacy Policy page will be added later.");

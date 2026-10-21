@@ -110,15 +110,3 @@ if (["Technical", "HR", "Mixed"].includes(initialType)) {
 }
 
 updateTypeCards();
-sessionStorage.setItem(
-  "hireMindInterviewSetup",
-  JSON.stringify({
-    interviewType: selectedType,
-    jobRole: selectedRole,
-    difficulty: selectedDifficulty,
-    duration: selectedDuration,
-    questionCount: selectedQuestionCount
-  })
-);
-
-window.location.href = "interview-room.html";

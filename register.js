@@ -7,12 +7,44 @@ const confirmPassword = document.getElementById("confirmPassword");
 const terms = document.getElementById("terms");
 const registerMessage = document.getElementById("registerMessage");
 
+const companyField = document.getElementById("companyField");
+const companyNameInput = document.getElementById("companyName");
+
+// Backend URL (pages are served by the same Express server)
+const API_URL = "/api/auth/register";
+
+const LOGIN_PAGES = {
+    student: "index.html",
+    recruiter: "company-login.html"
+};
+
+// Company name is only needed for recruiter accounts
+function updateCompanyField() {
+    const isRecruiter = role.value === "recruiter";
+
+    companyField.hidden = !isRecruiter;
+    companyNameInput.required = isRecruiter;
+}
+
+role.addEventListener("change", updateCompanyField);
+
+// Pre-select the account type from links such as register.html?role=recruiter
+const requestedRole = new URLSearchParams(window.location.search).get("role");
+
+if (requestedRole === "student" || requestedRole === "recruiter") {
+    role.value = requestedRole;
+}
+
+updateCompanyField();
+
 // Show or hide password
 document.querySelectorAll("[data-toggle]").forEach((button) => {
     button.addEventListener("click", () => {
         const input = document.getElementById(button.dataset.toggle);
-        const showPassword = input.type === "password";
 
+        if (!input) return;
+
+        const showPassword = input.type === "password";
         input.type = showPassword ? "text" : "password";
 
         button.setAttribute("aria-pressed", String(showPassword));
@@ -46,7 +78,7 @@ registerForm.addEventListener("submit", async (event) => {
         return;
     }
 
-    if (!email.validity.valid || !email.value.trim()) {
+    if (!email.value.trim() || !email.validity.valid) {
         showMessage("Please enter a valid email address.");
         email.focus();
         return;
@@ -76,60 +108,106 @@ registerForm.addEventListener("submit", async (event) => {
         return;
     }
 
-    const submitButton = registerForm.querySelector('button[type="submit"]');
+    const submitButton = registerForm.querySelector(
+        'button[type="submit"]'
+    );
+
     const buttonText = submitButton.querySelector("span");
 
+    let registered = false;
+
     submitButton.disabled = true;
-    buttonText.textContent = "Creating account...";
+
+    if (buttonText) {
+        buttonText.textContent = "Creating account...";
+    }
 
     try {
-        const response = await fetch("http://localhost:5050/api/auth/register", {
+        const requestBody = {
+            fullName: fullName.value.trim(),
+            email: email.value.trim().toLowerCase(),
+            role: role.value,
+            password: password.value,
+            confirmPassword: confirmPassword.value
+        };
+
+        if (role.value === "recruiter") {
+            if (!companyNameInput.value.trim()) {
+                showMessage("Please enter your company name.");
+                companyNameInput.focus();
+                return;
+            }
+
+            requestBody.companyName = companyNameInput.value.trim();
+        }
+
+        const response = await fetch(API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                fullName: fullName.value.trim(),
-                email: email.value.trim(),
-                role: role.value,
-                password: password.value,
-                confirmPassword: confirmPassword.value
-            })
+            body: JSON.stringify(requestBody)
         });
 
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
 
         if (!response.ok) {
-            showMessage(data.message || "Registration failed. Please try again.");
+            showMessage(
+                data.message || "Registration failed. Please try again."
+            );
             return;
         }
 
+        const loginPage = LOGIN_PAGES[role.value];
+
         showMessage(
-            "Account created successfully! You can now sign in.",
+            "Account created successfully! Taking you to sign in...",
             true
         );
 
+        registered = true;
         registerForm.reset();
+        updateCompanyField();
+
+        setTimeout(() => {
+            window.location.href = loginPage;
+        }, 1500);
 
     } catch (error) {
         console.error("Registration request failed:", error);
+
         showMessage(
-            "Cannot connect to the server. Please make sure the backend is running."
+            "Cannot connect to the server. Check the backend and API port."
         );
+
     } finally {
-        submitButton.disabled = false;
-        buttonText.textContent = "Create my account";
+        // Stay disabled while redirecting after a successful registration.
+        if (!registered) {
+            submitButton.disabled = false;
+
+            if (buttonText) {
+                buttonText.textContent = "Create my account";
+            }
+        }
     }
 });
 
 // Terms of Use placeholder
-document.getElementById("termsLink").addEventListener("click", (event) => {
-    event.preventDefault();
-    showMessage("The Terms of Use page will be added later.");
-});
+const termsLink = document.getElementById("termsLink");
+
+if (termsLink) {
+    termsLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        showMessage("The Terms of Use page will be added later.");
+    });
+}
 
 // Privacy Policy placeholder
-document.getElementById("privacyLink").addEventListener("click", (event) => {
-    event.preventDefault();
-    showMessage("The Privacy Policy page will be added later.");
-});
+const privacyLink = document.getElementById("privacyLink");
+
+if (privacyLink) {
+    privacyLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        showMessage("The Privacy Policy page will be added later.");
+    });
+}

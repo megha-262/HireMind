@@ -1123,3 +1123,116 @@ h1 > span {
         letter-spacing: 1px;
     }
 }
+
+/* =====================================
+   LOGIN STATES (student + company)
+===================================== */
+
+.login-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    max-width: 260px;
+    margin-bottom: 24px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: #f3f4f9;
+}
+
+.login-switch a {
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: #656e85;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.login-switch a:hover {
+    color: var(--purple);
+}
+
+.login-switch a.active {
+    background: var(--white);
+    color: var(--purple);
+    box-shadow: 0 2px 8px rgba(23, 32, 57, 0.08);
+}
+
+.login-switch a:focus-visible,
+.login-button:focus-visible,
+.text-link:focus-visible {
+    outline: 3px solid rgba(118, 100, 238, 0.3);
+    outline-offset: 2px;
+}
+
+.input-wrap.invalid {
+    border-color: #d77a86;
+    box-shadow: 0 0 0 4px rgba(179, 75, 87, 0.08);
+}
+
+.field-error {
+    min-height: 0;
+    margin-top: -3px;
+    color: #b34b57;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.field-error:empty {
+    display: none;
+}
+
+.form-message.visible {
+    margin-top: 0;
+    padding: 11px 13px;
+    border-radius: 9px;
+}
+
+.form-message.error {
+    color: #b34b57;
+    background: #fdf1f3;
+    border: 1px solid #f3d3d8;
+}
+
+.form-message.success {
+    color: #21845f;
+    background: #eefaf5;
+    border: 1px solid #c9eedd;
+}
+
+.login-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+    transform: none;
+    box-shadow: 0 8px 19px rgba(105, 100, 235, 0.15);
+}
+
+.button-spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: button-spin 0.7s linear infinite;
+}
+
+.login-button.loading .button-spinner {
+    display: inline-block;
+}
+
+.login-button.loading .button-arrow {
+    display: none;
+}
+
+@keyframes button-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.field[hidden] {
+    display: none;
+}

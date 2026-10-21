@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Dashboard | HireMind</title>
+  <meta name="description" content="HireMind company recruitment workspace.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body data-role="recruiter" class="is-loading" aria-busy="true">
+
+<!-- Icon sprite -->
+<svg class="icon-sprite" aria-hidden="true">
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M10 21v-4h4v4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><path d="m23 7-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></symbol>
+</svg>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+    <a href="#dashboard" class="brand">
+      <span class="brand-icon">H</span>
+      <span>Hire<span class="brand-accent">Mind</span></span>
+    </a>
+
+    <nav class="nav-menu" aria-label="Main navigation">
+      <a class="nav-link" href="#dashboard" data-view-link="dashboard"><svg class="icon"><use href="#i-grid"/></svg> Dashboard</a>
+      <a class="nav-link" href="#profile" data-view-link="profile"><svg class="icon"><use href="#i-building"/></svg> Company Profile</a>
+      <a class="nav-link" href="#post-job" data-view-link="post-job"><svg class="icon"><use href="#i-plus"/></svg> Post a Job</a>
+      <a class="nav-link" href="#jobs" data-view-link="jobs"><svg class="icon"><use href="#i-briefcase"/></svg> Manage Jobs</a>
+      <a class="nav-link" href="#candidates" data-view-link="candidates"><svg class="icon"><use href="#i-users"/></svg> Candidates</a>
+      <a class="nav-link" href="#interviews" data-view-link="interviews"><svg class="icon"><use href="#i-video"/></svg> AI Interview Management</a>
+      <a class="nav-link" href="#results" data-view-link="results"><svg class="icon"><use href="#i-clipboard"/></svg> Interview Results</a>
+      <a class="nav-link" href="#settings" data-view-link="settings"><svg class="icon"><use href="#i-settings"/></svg> Settings</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button type="button" class="nav-link" data-logout><svg class="icon"><use href="#i-logout"/></svg> Log out</button>
+    </div>
+  </aside>
+
+  <div class="sidebar-scrim" id="sidebarScrim" hidden></div>
+
+  <main class="main">
+    <header class="topbar">
+      <button type="button" class="menu-toggle" id="menuToggle"
+        aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">☰</button>
+
+      <p class="topbar-greeting when-ready">
+        <strong data-company-name></strong> · Hiring workspace
+      </p>
+
+      <div class="account-menu when-ready">
+        <button type="button" class="account-button" id="accountButton"
+          aria-haspopup="true" aria-expanded="false" aria-controls="accountDropdown">
+          <span class="avatar avatar-square" data-company-initials aria-hidden="true"></span>
+          <span class="account-name" data-company-name></span>
+          <span class="chevron" aria-hidden="true">▾</span>
+        </button>
+
+        <div class="account-dropdown" id="accountDropdown" hidden>
+          <div class="account-summary">
+            <strong data-company-name></strong>
+            <span data-user-email></span>
+          </div>
+          <a href="#profile" class="dropdown-item">Company Profile</a>
+          <a href="#settings" class="dropdown-item">Settings</a>
+          <button type="button" class="dropdown-item" data-logout>Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-state state-loading" role="status">
+      <span class="spinner" aria-hidden="true"></span>
+      <p>Loading your workspace…</p>
+    </div>
+
+    <div class="page-state state-error" role="alert">
+      <h1>Something went wrong</h1>
+      <p data-load-error></p>
+      <button type="button" class="btn btn-primary" data-retry>Try again</button>
+    </div>
+
+    <div class="content">
+
+      <!-- ===== Dashboard ===== -->
+      <section class="view" data-view="dashboard" aria-labelledby="dashboardTitle">
+        <div class="welcome">
+          <div class="welcome-identity">
+            <span class="avatar avatar-large avatar-square" data-company-initials aria-hidden="true"></span>
+            <div>
+              <h1 id="dashboardTitle">Welcome back, <span data-company-name></span>!</h1>
+              <p class="muted">Manage your hiring process and discover the right talent with HireMind.</p>
+            </div>
+          </div>
+          <a href="#post-job" class="btn btn-primary">Post a job</a>
+        </div>
+
+        <div class="stat-grid" id="statsGrid" aria-live="polite"></div>
+
+        <div class="split-grid">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Recent jobs</h2>
+                <p class="muted">Your latest job postings.</p>
+              </div>
+              <a href="#jobs" class="text-link">Manage jobs →</a>
+            </div>
+            <div id="recentJobs"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Recent activity</h2>
+                <p class="muted">Events from your hiring workflow.</p>
+              </div>
+            </div>
+            <div id="recentActivity"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ===== Company profile ===== -->
+      <section class="view" data-view="profile" aria-labelledby="profileTitle" hidden>
+        <div class="view-header">
+          <h1 id="profileTitle">Company profile</h1>
+          <p class="muted">This information is shown to candidates on your job postings.</p>
+        </div>
+
+        <form class="panel form-panel" id="profileForm" novalidate>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="profileCompanyName">Company name <span class="required">*</span></label>
+              <input id="profileCompanyName" name="companyName" maxlength="100" required autocomplete="organization">
+            </div>
+            <div class="form-field">
+              <label for="profileFullName">Contact person <span class="required">*</span></label>
+              <input id="profileFullName" name="fullName" maxlength="100" required autocomplete="name">
+            </div>
+            <div class="form-field">
+              <label for="profileEmail">Registered email</label>
+              <input id="profileEmail" name="email" type="email" readonly aria-describedby="profileEmailHint">
+              <p class="field-hint" id="profileEmailHint">Your sign-in email can't be changed here.</p>
+            </div>
+            <div class="form-field">
+              <label for="profileIndustry">Industry</label>
+              <input id="profileIndustry" name="industry" maxlength="100" placeholder="e.g. Software, Fintech, Healthcare">
+            </div>
+            <div class="form-field">
+              <label for="profileLocation">Location</label>
+              <input id="profileLocation" name="location" maxlength="150" placeholder="e.g. Bengaluru, India">
+            </div>
+            <div class="form-field">
+              <label for="profileWebsite">Website</label>
+              <input id="profileWebsite" name="website" maxlength="200" placeholder="e.g. www.example.com" inputmode="url">
+            </div>
+            <div class="form-field full">
+              <label for="profileDescription">Company description</label>
+              <textarea id="profileDescription" name="description" rows="5" maxlength="2000"
+                placeholder="What does your company do, and what is it like to work there?"></textarea>
+            </div>
+          </div>
+
+          <p class="form-alert" id="profileMessage" role="status" aria-live="polite" hidden></p>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="profileSubmit">Save profile</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ===== Post / edit a job ===== -->
+      <section class="view" data-view="post-job" aria-labelledby="jobFormTitle" hidden>
+        <div class="view-header">
+          <h1 id="jobFormTitle">Post a job</h1>
+          <p class="muted" id="jobFormSubtitle">Fields marked * are required. Open jobs are visible to students on HireMind.</p>
+        </div>
+
+        <form class="panel form-panel" id="jobForm" novalidate>
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="jobTitle">Job title <span class="required">*</span></label>
+              <input id="jobTitle" name="title" maxlength="120" required placeholder="e.g. Frontend Developer">
+            </div>
+            <div class="form-field">
+              <label for="jobEmploymentType">Employment type <span class="required">*</span></label>
+              <select id="jobEmploymentType" name="employmentType" required>
+                <option value="">Select type</option>
+                <option value="full_time">Full-time</option>
+                <option value="part_time">Part-time</option>
+                <option value="contract">Contract</option>
+                <option value="internship">Internship</option>
+                <option value="temporary">Temporary</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="jobExperienceLevel">Experience level <span class="required">*</span></label>
+              <select id="jobExperienceLevel" name="experienceLevel" required>
+                <option value="">Select level</option>
+                <option value="internship">Internship</option>
+                <option value="entry">Entry level</option>
+                <option value="mid">Mid level</option>
+                <option value="senior">Senior</option>
+                <option value="lead">Lead / Manager</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="jobWorkplaceType">Workplace <span class="required">*</span></label>
+              <select id="jobWorkplaceType" name="workplaceType" required>
+                <option value="">Select workplace</option>
+                <option value="on_site">On-site</option>
+                <option value="hybrid">Hybrid</option>
+                <option value="remote">Remote</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="jobLocation">Location <span class="required" id="jobLocationRequired">*</span></label>
+              <input id="jobLocation" name="location" maxlength="150" placeholder="e.g. Pune, India">
+            </div>
+            <div class="form-field">
+              <label for="jobVacancies">Number of vacancies <span class="required">*</span></label>
+              <input id="jobVacancies" name="vacancies" type="number" min="1" max="1000" step="1" required value="1">
+            </div>
+            <div class="form-field">
+              <label for="jobDeadline">Application deadline</label>
+              <input id="jobDeadline" name="deadline" type="date">
+            </div>
+            <div class="form-field full">
+              <label for="jobSkills">Required skills <span class="required">*</span></label>
+              <input id="jobSkills" name="skills" maxlength="900" required placeholder="e.g. JavaScript, React, REST APIs" aria-describedby="jobSkillsHint">
+              <p class="field-hint" id="jobSkillsHint">Separate skills with commas (up to 20).</p>
+            </div>
+            <div class="form-field full">
+              <label for="jobDescription">Job description <span class="required">*</span></label>
+              <textarea id="jobDescription" name="description" rows="8" maxlength="5000" required
+                placeholder="Responsibilities, requirements, and what the candidate will work on."></textarea>
+            </div>
+          </div>
+
+          <p class="form-alert" id="jobFormMessage" role="status" aria-live="polite" hidden></p>
+
+          <div class="form-actions">
+            <a href="#jobs" class="btn btn-secondary" id="jobCancel" hidden>Cancel</a>
+            <button type="submit" class="btn btn-primary" id="jobSubmit">Post job</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ===== Manage jobs ===== -->
+      <section class="view" data-view="jobs" aria-labelledby="jobsTitle" hidden>
+        <div class="view-header view-header-row">
+          <div>
+            <h1 id="jobsTitle">Manage jobs</h1>
+            <p class="muted">All job postings created by your company.</p>
+          </div>
+          <a href="#post-job" class="btn btn-primary">Post a job</a>
+        </div>
+
+        <div class="toolbar">
+          <label class="sr-only" for="jobSearch">Search jobs</label>
+          <input type="search" id="jobSearch" placeholder="Search by job title" class="toolbar-search">
+          <label class="sr-only" for="jobStatusFilter">Filter by status</label>
+          <select id="jobStatusFilter">
+            <option value="">All statuses</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+
+        <section class="panel panel-flush" id="jobsList"></section>
+      </section>
+
+      <!-- ===== Candidates ===== -->
+      <section class="view" data-view="candidates" aria-labelledby="candidatesTitle" hidden>
+        <div class="view-header">
+          <h1 id="candidatesTitle">Candidates</h1>
+          <p class="muted">Students who applied to your jobs. Status changes are saved immediately.</p>
+        </div>
+
+        <div class="toolbar">
+          <label class="sr-only" for="candidateSearch">Search candidates</label>
+          <input type="search" id="candidateSearch" placeholder="Search name, email, skill, or job" class="toolbar-search">
+          <label class="sr-only" for="candidateJobFilter">Filter by job</label>
+          <select id="candidateJobFilter">
+            <option value="">All jobs</option>
+          </select>
+          <label class="sr-only" for="candidateStatusFilter">Filter by status</label>
+          <select id="candidateStatusFilter">
+            <option value="">All statuses</option>
+            <option value="applied">Applied</option>
+            <option value="under_review">Under Review</option>
+            <option value="shortlisted">Shortlisted</option>
+            <option value="interview_scheduled">Interview Scheduled</option>
+            <option value="selected">Selected</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        <section class="panel panel-flush" id="candidatesList"></section>
+      </section>
+
+      <!-- ===== Interview management ===== -->
+      <section class="view" data-view="interviews" aria-labelledby="interviewsTitle" hidden>
+        <div class="view-header">
+          <h1 id="interviewsTitle">AI interview management</h1>
+          <p class="muted">Schedule interviews with shortlisted candidates and track their status.</p>
+        </div>
+
+        <div class="notice notice-info">
+          <svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg>
+          <div>
+            <strong>AI interviewing is coming soon.</strong>
+            Interviews scheduled here are conducted by your team. AI-generated questions and automated scoring are not connected yet.
+          </div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Ready to schedule</h2>
+              <p class="muted">Shortlisted candidates without a scheduled interview.</p>
+            </div>
+          </div>
+          <div id="eligibleList"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Upcoming interviews</h2>
+              <p class="muted">Scheduled interviews that have not been completed or cancelled.</p>
+            </div>
+          </div>
+          <div id="upcomingList"></div>
+        </section>
+      </section>
+
+      <!-- ===== Interview results ===== -->
+      <section class="view" data-view="results" aria-labelledby="resultsTitle" hidden>
+        <div class="view-header">
+          <h1 id="resultsTitle">Interview results</h1>
+          <p class="muted">Completed interviews, your team's feedback, and hiring decisions.</p>
+        </div>
+
+        <div class="notice notice-info">
+          <svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg>
+          <div>
+            <strong>AI scores and feedback are coming soon.</strong>
+            Results below contain only the feedback your team recorded when completing each interview.
+          </div>
+        </div>
+
+        <section class="panel panel-flush" id="resultsList"></section>
+      </section>
+
+      <!-- ===== Settings ===== -->
+      <section class="view" data-view="settings" aria-labelledby="settingsTitle" hidden>
+        <div class="view-header">
+          <h1 id="settingsTitle">Settings</h1>
+          <p class="muted">Manage your account security.</p>
+        </div>
+
+        <section class="panel">
+          <h2>Account</h2>
+          <dl class="detail-list">
+            <div><dt>Signed in as</dt><dd data-user-email></dd></div>
+            <div><dt>Account type</dt><dd data-user-role></dd></div>
+            <div><dt>Member since</dt><dd data-user-joined></dd></div>
+          </dl>
+        </section>
+
+        <form class="panel form-panel" id="passwordForm" novalidate>
+          <h2>Change password</h2>
+          <p class="muted panel-intro">Changing your password signs out your other devices.</p>
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="currentPassword">Current password</label>
+              <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required>
+            </div>
+            <div class="form-field">
+              <label for="newPassword">New password</label>
+              <input id="newPassword" name="newPassword" type="password" autocomplete="new-password" minlength="8" maxlength="72" required aria-describedby="newPasswordHint">
+              <p class="field-hint" id="newPasswordHint">8 to 72 characters.</p>
+            </div>
+            <div class="form-field">
+              <label for="confirmNewPassword">Confirm new password</label>
+              <input id="confirmNewPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
+            </div>
+          </div>
+          <p class="form-alert" id="passwordMessage" role="status" aria-live="polite" hidden></p>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="passwordSubmit">Update password</button>
+          </div>
+        </form>
+
+        <section class="panel">
+          <h2>Sessions</h2>
+          <p class="muted panel-intro">Sign out of HireMind on every other browser or device. You will stay signed in here.</p>
+          <p class="form-alert" id="sessionsMessage" role="status" aria-live="polite" hidden></p>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="logoutOthers">Sign out other sessions</button>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <footer class="page-footer">
+      <span>© 2026 HireMind</span>
+      <span>AI-powered interview experiences</span>
+    </footer>
+  </main>
+</div>
+
+<!-- Job details -->
+<dialog class="dialog dialog-wide" id="jobDialog" aria-labelledby="jobDialogTitle">
+  <div class="dialog-header">
+    <h2 id="jobDialogTitle">Job details</h2>
+    <button type="button" class="dialog-close" data-close-dialog aria-label="Close">×</button>
+  </div>
+  <div class="dialog-body" id="jobDialogBody"></div>
+</dialog>
+
+<!-- Confirmation -->
+<dialog class="dialog" id="confirmDialog" aria-labelledby="confirmTitle">
+  <div class="dialog-header">
+    <h2 id="confirmTitle">Are you sure?</h2>
+  </div>
+  <div class="dialog-body">
+    <p id="confirmMessage"></p>
+  </div>
+  <div class="dialog-footer">
+    <button type="button" class="btn btn-secondary" data-close-dialog>Cancel</button>
+    <button type="button" class="btn btn-danger" id="confirmOk">Confirm</button>
+  </div>
+</dialog>
+
+<!-- Schedule interview -->
+<dialog class="dialog" id="scheduleDialog" aria-labelledby="scheduleTitle">
+  <form id="scheduleForm" novalidate>
+    <div class="dialog-header">
+      <h2 id="scheduleTitle">Schedule interview</h2>
+      <button type="button" class="dialog-close" data-close-dialog aria-label="Close">×</button>
+    </div>
+    <div class="dialog-body">
+      <p class="muted" id="scheduleCandidate"></p>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="scheduleAt">Date and time <span class="required">*</span></label>
+          <input id="scheduleAt" name="scheduledAt" type="datetime-local" required>
+        </div>
+        <div class="form-field">
+          <label for="scheduleDuration">Duration <span class="required">*</span></label>
+          <select id="scheduleDuration" name="durationMinutes" required>
+            <option value="15">15 minutes</option>
+            <option value="30">30 minutes</option>
+            <option value="45" selected>45 minutes</option>
+            <option value="60">60 minutes</option>
+            <option value="90">90 minutes</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label for="scheduleMode">Format <span class="required">*</span></label>
+          <select id="scheduleMode" name="mode" required>
+            <option value="video">Video call</option>
+            <option value="phone">Phone call</option>
+            <option value="in_person">In person</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label for="scheduleDetails">Meeting details for the candidate</label>
+          <input id="scheduleDetails" name="meetingDetails" maxlength="300" placeholder="Meeting link, address, or phone instructions">
+        </div>
+        <div class="form-field full">
+          <label for="scheduleNotes">Internal notes</label>
+          <textarea id="scheduleNotes" name="notes" rows="3" maxlength="1000" placeholder="Only visible to your company"></textarea>
+        </div>
+      </div>
+      <p class="form-alert" id="scheduleMessage" role="status" aria-live="polite" hidden></p>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn btn-secondary" data-close-dialog>Cancel</button>
+      <button type="submit" class="btn btn-primary" id="scheduleSubmit">Schedule</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Complete interview -->
+<dialog class="dialog" id="completeDialog" aria-labelledby="completeTitle">
+  <form id="completeForm" novalidate>
+    <div class="dialog-header">
+      <h2 id="completeTitle">Mark interview as completed</h2>
+      <button type="button" class="dialog-close" data-close-dialog aria-label="Close">×</button>
+    </div>
+    <div class="dialog-body">
+      <p class="muted" id="completeCandidate"></p>
+      <div class="form-field">
+        <label for="completeFeedback">Interviewer feedback</label>
+        <textarea id="completeFeedback" name="feedback" rows="5" maxlength="2000" placeholder="Strengths, concerns, and recommendation (internal)"></textarea>
+      </div>
+      <p class="form-alert" id="completeMessage" role="status" aria-live="polite" hidden></p>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn btn-secondary" data-close-dialog>Cancel</button>
+      <button type="submit" class="btn btn-primary" id="completeSubmit">Mark completed</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="session.js"></script>
+<script src="dashboard-shell.js"></script>
+<script src="dashboard-utils.js"></script>
+<script src="company-dashboard.js"></script>
+</body>
+</html>

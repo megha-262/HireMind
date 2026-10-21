@@ -34,6 +34,31 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+
+    // Optional company profile details (recruiter accounts only)
+    description: {
+      type: String,
+      trim: true,
+      maxlength: 2000,
+    },
+
+    industry: {
+      type: String,
+      trim: true,
+      maxlength: 100,
+    },
+
+    website: {
+      type: String,
+      trim: true,
+      maxlength: 200,
+    },
+
+    location: {
+      type: String,
+      trim: true,
+      maxlength: 150,
+    },
   },
   {
     timestamps: true,

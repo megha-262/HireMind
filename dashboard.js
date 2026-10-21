@@ -1,308 +1,252 @@
-if (sessionStorage.getItem("hireMindLoggedIn") !== "true") {
-  window.location.replace("index.html");
-}
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+// Student dashboard: view switching, job browsing, and applications.
+// Account data is filled in by session.js from the authenticated session;
+// shared helpers live in dashboard-utils.js, sidebar/menu in dashboard-shell.js.
+const views = $$("[data-view]").map(view => view.dataset.view);
+const DEFAULT_VIEW = "dashboard";
 
-const sections = ["overview", "practice", "history", "feedback", "profile"];
-let toastTimeout;
-let lastFocusedElement = null;
+const studentState = {
+  ready: false,
+  jobs: [],
+  applyTarget: null
+};
 
-const sampleInterviews = [
-  { title: "Java Developer", type: "Technical", date: "Oct 18, 2026", score: "84/100", status: "Completed" },
-  { title: "HR Practice", type: "HR", date: "Oct 16, 2026", score: "76/100", status: "Completed" },
-  { title: "Data Structures", type: "Technical", date: "Oct 14, 2026", score: "—", status: "Not started" },
-  { title: "Problem Solving", type: "Technical", date: "Oct 12, 2026", score: "79/100", status: "Completed" },
-  { title: "Self Introduction", type: "HR", date: "Oct 10, 2026", score: "73/100", status: "Completed" }
-];
-
-function showToast(message) {
-  const toast = $("#toast");
-  toast.textContent = message;
-  toast.classList.add("show");
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => toast.classList.remove("show"), 3000);
+function currentView() {
+  const requested = window.location.hash.slice(1);
+  return views.includes(requested) ? requested : DEFAULT_VIEW;
 }
 
-function openModal(title, content) {
-  lastFocusedElement = document.activeElement;
-  $("#modalTitle").textContent = title;
-  $("#modalBody").replaceChildren();
+function showView() {
+  const current = currentView();
 
-  if (typeof content === "string") {
-    const paragraph = document.createElement("p");
-    paragraph.textContent = content;
-    $("#modalBody").append(paragraph);
-  } else {
-    $("#modalBody").append(content);
-  }
-
-  $("#modalBackdrop").classList.remove("hidden");
-  $("#modalClose").focus();
-}
-
-function closeModal() {
-  $("#modalBackdrop").classList.add("hidden");
-  if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
-    lastFocusedElement.focus();
-  }
-}
-
-function navigateTo(section) {
-  if (!sections.includes(section)) return;
-
-  sections.forEach(name => {
-    const element = $(`#${name}Section`);
-    if (element) element.classList.toggle("hidden", name !== section);
+  $$("[data-view]").forEach(view => {
+    view.hidden = view.dataset.view !== current;
   });
 
-  $$(".nav-link[data-section]").forEach(button => {
-    button.classList.toggle("active", button.dataset.section === section);
-  });
+  $$("[data-view-link]").forEach(link => {
+    const active = link.dataset.viewLink === current;
+    link.classList.toggle("active", active);
 
-  const labels = {
-    overview: "Overview",
-    practice: "Practice Interviews",
-    history: "Interview History",
-    feedback: "My Feedback",
-    profile: "My Profile"
-  };
-
-  $("#breadcrumbName").textContent = labels[section];
-  $("#sidebar").classList.remove("open");
-  $("#menuToggle").setAttribute("aria-expanded", "false");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function renderInterviews() {
-  const tbody = $("#historyTable");
-  tbody.replaceChildren();
-
-  sampleInterviews.forEach(interview => {
-    const row = document.createElement("tr");
-
-    const values = [
-      interview.title,
-      interview.type,
-      interview.date,
-      interview.score
-    ];
-
-    values.forEach((value, index) => {
-      const cell = document.createElement("td");
-
-      if (index === 0) {
-        const icon = document.createElement("span");
-        icon.className = `table-icon ${interview.type === "HR" ? "blue" : "purple"}`;
-        icon.textContent = interview.type === "HR" ? "♡" : "⌘";
-
-        const title = document.createElement("span");
-        title.className = "table-title";
-        title.textContent = value;
-
-        cell.append(icon, title);
-      } else {
-        cell.textContent = value;
-      }
-
-      row.append(cell);
-    });
-
-    const statusCell = document.createElement("td");
-    const status = document.createElement("span");
-    status.className = `status ${interview.status === "Completed" ? "completed" : "pending"}`;
-    status.textContent = interview.status;
-    statusCell.append(status);
-    row.append(statusCell);
-
-    const actionCell = document.createElement("td");
-    const action = document.createElement("button");
-    action.className = "row-action";
-    action.textContent = interview.status === "Completed" ? "View ↗" : "Start ↗";
-
-    if (interview.status === "Completed") {
-      action.addEventListener("click", () => showFeedback(interview.title));
+    if (active) {
+      link.setAttribute("aria-current", "page");
     } else {
-      action.addEventListener("click", () => showPracticeSetup("Technical"));
+      link.removeAttribute("aria-current");
     }
-
-    actionCell.append(action);
-    row.append(actionCell);
-    tbody.append(row);
   });
+
+  window.scrollTo({ top: 0 });
+
+  if (studentState.ready) loadView(current);
 }
 
-function showFeedback(title) {
-  const interview = sampleInterviews.find(item => item.title === title);
+function loadView(view) {
+  if (view === "jobs") loadStudentJobs();
+  if (view === "applications") loadStudentApplications();
+}
 
-  if (!interview || interview.status !== "Completed") {
-    showToast("Complete a practice session to see feedback.");
+window.addEventListener("hashchange", showView);
+
+document.addEventListener("hiremind:session", () => {
+  studentState.ready = true;
+  loadView(currentView());
+});
+
+// ---------- Find jobs ----------
+
+function renderStudentJobs() {
+  const container = $("#studentJobsList");
+  const query = $("#studentJobSearch").value.trim().toLowerCase();
+  const workplace = $("#studentWorkplaceFilter").value;
+
+  if (!studentState.jobs.length) {
+    container.replaceChildren(stateBlock({
+      type: "empty",
+      title: "No open jobs right now.",
+      message: "Companies haven't posted any open positions yet. Check back soon."
+    }));
     return;
   }
 
-  const content = document.createElement("div");
-
-  const score = document.createElement("p");
-  score.textContent = `Sample score: ${interview.score}`;
-
-  const explanation = document.createElement("p");
-  explanation.textContent =
-    "This is demonstration feedback. Real question-level feedback and AI-generated scores will be added after backend and evaluation integration.";
-
-  const tips = document.createElement("ul");
-
-  [
-    "Explain your approach step by step.",
-    "Use specific examples to support your answers.",
-    "Review concepts that you find challenging."
-  ].forEach(text => {
-    const item = document.createElement("li");
-    item.textContent = text;
-    tips.append(item);
-  });
-
-  content.append(score, explanation, tips);
-  openModal(`${title} — Feedback`, content);
-}
-
-function showPracticeSetup(type) {
-  const content = document.createElement("div");
-  const description = document.createElement("p");
-  description.textContent =
-    `${type} interview selected. Choose a difficulty and duration for your demo setup.`;
-
-  const label = document.createElement("label");
-  label.htmlFor = "practiceDifficulty";
-  label.textContent = "Difficulty";
-
-  const difficulty = document.createElement("select");
-  difficulty.id = "practiceDifficulty";
-  difficulty.className = "demo-select";
-
-  ["Beginner", "Intermediate", "Advanced"].forEach(level => {
-    const option = document.createElement("option");
-    option.value = level;
-    option.textContent = level;
-    difficulty.append(option);
-  });
-
-  const durationLabel = document.createElement("label");
-  durationLabel.htmlFor = "practiceDuration";
-  durationLabel.textContent = "Duration";
-
-  const duration = document.createElement("select");
-  duration.id = "practiceDuration";
-  duration.className = "demo-select";
-
-  ["15 minutes", "30 minutes", "45 minutes"].forEach(time => {
-    const option = document.createElement("option");
-    option.value = time;
-    option.textContent = time;
-    duration.append(option);
-  });
-
-  const startButton = document.createElement("button");
-  startButton.className = "primary-button full-width";
-  startButton.style.marginTop = "15px";
-  startButton.textContent = "Continue demo setup";
-
-  startButton.addEventListener("click", () => {
-    const chosenDifficulty = difficulty.value;
-    const chosenDuration = duration.value;
-    closeModal();
-
-    openModal("Practice setup saved", 
-      `Your demo selection: ${type} interview, ${chosenDifficulty} difficulty, ${chosenDuration}. The actual interview room will be implemented next.`
-    );
-  });
-
-  content.append(description, label, difficulty, durationLabel, duration, startButton);
-  openModal(`Set up ${type} practice`, content);
-}
-
-$$(".nav-link[data-section], .profile-mini, .top-avatar").forEach(button => {
-  button.addEventListener("click", () => navigateTo(button.dataset.section));
-});
-
-$$("[data-go]").forEach(button => {
-  button.addEventListener("click", () => navigateTo(button.dataset.go));
-});
-
-$$("[data-section]").forEach(button => {
-  if (button.matches(".nav-link, .profile-mini, .top-avatar")) return;
-  button.addEventListener("click", () => navigateTo(button.dataset.section));
-});
-
-$$("[data-start]").forEach(button => {
-  button.addEventListener("click", () => {
-    const type = button.dataset.start;
-    window.location.href =
-      `interview-setup.html?type=${encodeURIComponent(type)}`;
-  });
-});
-
-$$("[data-feedback]").forEach(button => {
-  button.addEventListener("click", () => showFeedback(button.dataset.feedback));
-});
-
-$("#menuToggle").addEventListener("click", () => {
-  const sidebar = $("#sidebar");
-  const isOpen = sidebar.classList.toggle("open");
-  $("#menuToggle").setAttribute("aria-expanded", String(isOpen));
-});
-
-$("#helpButton").addEventListener("click", () => {
-  openModal("HireMind Help & Support",
-    "This is the frontend demo. Help documentation and support integration can be added as the project develops."
+  const jobs = studentState.jobs.filter(job =>
+    (!workplace || job.workplaceType === workplace) &&
+    (!query || [job.title, job.company.name, ...job.skills]
+      .some(value => value.toLowerCase().includes(query)))
   );
-});
 
-$("#notificationButton").addEventListener("click", () => {
-  openModal("Notifications", "You are all caught up! Real interview notifications will be connected later.");
-});
-
-$("#modalClose").addEventListener("click", closeModal);
-$("#modalOkay").addEventListener("click", closeModal);
-
-$("#modalBackdrop").addEventListener("click", event => {
-  if (event.target === $("#modalBackdrop")) closeModal();
-});
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape" && !$("#modalBackdrop").classList.contains("hidden")) {
-    closeModal();
+  if (!jobs.length) {
+    container.replaceChildren(stateBlock({
+      type: "empty",
+      title: "No jobs match your search.",
+      message: "Try a different keyword or workplace."
+    }));
+    return;
   }
+
+  container.replaceChildren(
+    h("div", { class: "job-list" },
+      jobs.map(job =>
+        h("article", { class: "card job-card" },
+          h("div", { class: "job-card-head" },
+            h("div", {},
+              h("h2", { text: job.title }),
+              h("p", { class: "muted", text: job.company.industry ? `${job.company.name} · ${job.company.industry}` : job.company.name })
+            ),
+            job.applied
+              ? badge("selected", "Applied")
+              : actionButton("Apply", "apply", job.id, "btn-primary")
+          ),
+          h("p", { class: "job-meta" },
+            [
+              jobLocation(job),
+              LABELS.employmentType[job.employmentType],
+              LABELS.experienceLevel[job.experienceLevel],
+              job.deadline ? `Apply by ${formatDate(job.deadline, true)}` : null
+            ].filter(Boolean).join(" · ")
+          ),
+          skillChips(job.skills, 8),
+          h("details", { class: "job-details" },
+            h("summary", { text: "View description" }),
+            h("p", { class: "prewrap", text: job.description })
+          )
+        )
+      )
+    )
+  );
+}
+
+async function loadStudentJobs() {
+  const token = nextToken("student-jobs");
+  $("#studentJobsList").replaceChildren(stateBlock({ type: "loading", title: "Loading jobs…" }));
+
+  try {
+    const { jobs } = await api("/api/student/jobs");
+    if (!isCurrent("student-jobs", token)) return;
+
+    studentState.jobs = jobs;
+    renderStudentJobs();
+  } catch (error) {
+    if (!isCurrent("student-jobs", token)) return;
+
+    $("#studentJobsList").replaceChildren(stateBlock({
+      type: "error",
+      title: "Couldn't load jobs.",
+      message: error.message,
+      action: retryButton(loadStudentJobs)
+    }));
+  }
+}
+
+$("#studentJobSearch").addEventListener("input", renderStudentJobs);
+$("#studentWorkplaceFilter").addEventListener("change", renderStudentJobs);
+
+$("#studentJobsList").addEventListener("click", event => {
+  const button = event.target.closest("[data-action='apply']");
+  if (button) openApply(button.dataset.id);
 });
 
-$("#profileForm").addEventListener("submit", event => {
+// ---------- Apply dialog ----------
+
+const applyForm = $("#applyForm");
+
+function openApply(jobId) {
+  const job = studentState.jobs.find(item => item.id === jobId);
+  if (!job) return;
+
+  studentState.applyTarget = job.id;
+  applyForm.reset();
+  setAlert($("#applyMessage"), "");
+  $("#applyTitle").textContent = `Apply for ${job.title}`;
+  $("#applyJob").textContent = job.company.name;
+
+  openDialog($("#applyDialog"));
+}
+
+applyForm.addEventListener("submit", async event => {
   event.preventDefault();
 
-  const name = $("#fullName").value.trim();
-  const email = $("#email").value.trim();
+  const submit = $("#applySubmit");
+  const skills = applyForm.elements.skills.value.split(",").map(skill => skill.trim()).filter(Boolean);
 
-  if (!name || !email || !$("#email").checkValidity()) {
-    showToast("Please enter a valid name and email.");
+  if (skills.length > 20) {
+    setAlert($("#applyMessage"), "Add at most 20 skills.");
     return;
   }
 
-  const firstName = name.split(/\s+/)[0];
-  const initials = name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(part => part[0])
-    .join("")
-    .toUpperCase();
+  setBusy(submit, true, "Submitting…");
 
-  $("#welcomeName").textContent = firstName;
-  $("#sidebarName").textContent = name;
-  $("#profileDisplayName").textContent = name;
-  $("#profileAvatar").textContent = initials;
-  $$(".top-avatar, .avatar").forEach(element => {
-    element.textContent = initials;
-  });
+  try {
+    const data = await api(`/api/student/jobs/${studentState.applyTarget}/apply`, {
+      method: "POST",
+      body: { skills, coverNote: applyForm.elements.coverNote.value.trim() }
+    });
 
-  showToast("Demo profile updated for this page session.");
+    $("#applyDialog").close();
+    showToast(data.message);
+    loadStudentJobs();
+  } catch (error) {
+    setAlert($("#applyMessage"), error.message);
+  } finally {
+    setBusy(submit, false);
+  }
 });
 
-renderInterviews();
-navigateTo("overview");
+// ---------- My applications ----------
+
+function interviewInfo(interview) {
+  if (!interview) return h("span", { class: "muted", text: "—" });
+
+  if (interview.status !== "scheduled") {
+    return badge(interview.status, LABELS.interviewStatus[interview.status]);
+  }
+
+  return h("div", {},
+    h("div", { class: "cell-title", text: formatDateTime(interview.scheduledAt) }),
+    h("div", { class: "cell-sub", text: `${LABELS.mode[interview.mode]} · ${interview.durationMinutes} minutes` }),
+    interview.meetingDetails ? h("div", { class: "cell-sub", text: interview.meetingDetails }) : null
+  );
+}
+
+async function loadStudentApplications() {
+  const container = $("#studentApplicationsList");
+  const token = nextToken("student-applications");
+
+  container.replaceChildren(stateBlock({ type: "loading", title: "Loading applications…" }));
+
+  try {
+    const { applications } = await api("/api/student/applications");
+    if (!isCurrent("student-applications", token)) return;
+
+    if (!applications.length) {
+      container.replaceChildren(stateBlock({
+        type: "empty",
+        title: "You haven't applied for any jobs yet.",
+        message: "Browse open positions and apply to start tracking your applications here.",
+        action: linkButton("#jobs", "Find jobs")
+      }));
+      return;
+    }
+
+    container.replaceChildren(table(
+      ["Job", "Company", "Applied", "Status", "Interview"],
+      applications.map(application =>
+        h("tr", {},
+          h("td", { class: "cell-title", text: application.job.title }),
+          h("td", { text: application.job.companyName || "—" }),
+          h("td", { text: formatDate(application.createdAt) }),
+          h("td", {}, badge(application.status, LABELS.applicationStatus[application.status])),
+          h("td", {}, interviewInfo(application.interview))
+        )
+      )
+    ));
+  } catch (error) {
+    if (!isCurrent("student-applications", token)) return;
+
+    container.replaceChildren(stateBlock({
+      type: "error",
+      title: "Couldn't load your applications.",
+      message: error.message,
+      action: retryButton(loadStudentApplications)
+    }));
+  }
+}
+
+showView();
